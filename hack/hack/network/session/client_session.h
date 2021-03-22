@@ -7,26 +7,16 @@
 //assignment operators, destructor, all other methods, data members.
 //Do not put large method definitions inline in the class definition. Usually, only trivial or performance - critical, 
 //and very short, methods may be defined inline.See Inline Functions for more details.
-
-//Include headers in the following order : Related header, C system headers, C++ standard library headers, 
-//other libraries' headers, your project's headers.
-
-//Related header,
-#include "../headers/common_headers.h"
-#include "../define/common_define.h"
-//C system headers
+//#include ""
+#include "../../headers/common_headers.h"
+//
 //#include <>
-//C++ standard library headers
-//#include <>
-//other libraries' headers
-//#include "../define/common_define.h"
-
-struct epoll_event;
+//
 //
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Network {
-//types(including typedef, using, and nested structsand classes)
+class ClientSession {
+//types.. (typdef, using nest stucts and classes)
 public:
 
 
@@ -36,47 +26,37 @@ public:
 
 //factory functions, constructors and assignment operators, destructor
 public:
-	Network();
-	~Network();
+	ClientSession();
+	~ClientSession();
 
 
 //all other methods
 public:
 	//basic methods(init, run, destroy..)
-	bool Init(uint16_t port);
-	void Run();
 	//other methods
+	void RecvData(char* buff, ssize_t data_size);
 	//getters
+	const uint32_t FD() const { return fd_; };
 	//setters
-
-
-//private types
-private:
-
+	void SetFD(uint32_t fd) { fd_ = fd; };
 	
+
 //private constants
 private:
-	uint16_t kListenSize = 5;
-	uint16_t kMaxEvents = 1000;
-
+	static constexpr uint16_t kMaxSessionRecvBuffSize = 1024 * 10;
+	static constexpr uint16_t kMaxReadSize = 512;
 
 //private methods	
 private:
-	bool Bind(const int socket, const uint16_t port);
-	void Accept();
-	bool MakeSocketNonBlocking(const int socket);
-	bool RegisterEpollEvnet(const int socket, const uint32_t event);
-	void RecvPacket(epoll_event* event);
 
 
-//data members	
+//data members
 private:
-	int listen_socket_ = INVALID_FD;
-	int epoll_ = INVALID_FD;
-	epoll_event* event_ = nullptr;
-	epoll_event* epoll_event_list_ = nullptr;
-
+	char recv_buff_[kMaxSessionRecvBuffSize];
+	uint32_t fd_ = 0;
+	ssize_t cur_buff_position_ = 0;
+	ssize_t recv_packet_size_ = 0;
 
 };
-//class Network
+//class ClientSession
 }; //namespace hack

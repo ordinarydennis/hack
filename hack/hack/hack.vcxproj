@@ -79,6 +79,7 @@
     <ClCompile Include="chat_server\chat_server.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="network\network.cpp" />
+    <ClCompile Include="network\session\client_session.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\server_app.h" />
@@ -87,8 +88,14 @@
     <ClInclude Include="define\types_define.h" />
     <ClInclude Include="headers\common_headers.h" />
     <ClInclude Include="network\network.h" />
+    <ClInclude Include="network\session\client_session.h" />
+    <ClInclude Include="utils\tsqueue\tsqueue.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

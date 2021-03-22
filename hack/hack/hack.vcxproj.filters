@@ -11,6 +11,9 @@
     <ClCompile Include="network\network.cpp">
       <Filter>network</Filter>
     </ClCompile>
+    <ClCompile Include="network\session\client_session.cpp">
+      <Filter>network\session</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="network">
@@ -31,6 +34,12 @@
     <Filter Include="define">
       <UniqueIdentifier>{bdb453d2-1d53-44a4-bbad-c729d4650c87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{80b7fd55-3d98-4288-8bdb-a9003fb98fe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\tsqueue">
+      <UniqueIdentifier>{e4959411-67b9-4385-92cd-37ab7fe25e92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chat_server\chat_server.h">
@@ -50,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="define\common_define.h">
       <Filter>define</Filter>
+    </ClInclude>
+    <ClInclude Include="network\session\client_session.h">
+      <Filter>network\session</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\tsqueue\tsqueue.h">
+      <Filter>utils\tsqueue</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
