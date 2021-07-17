@@ -16,7 +16,7 @@
 //
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class ClientSession {
+class Session {
 //types.. (typdef, using nest stucts and classes)
 public:
 
@@ -27,8 +27,8 @@ public:
 
 //factory functions, constructors and assignment operators, destructor
 public:
-	ClientSession();
-	~ClientSession();
+	Session();
+	~Session();
 
 
 //all other methods
@@ -53,9 +53,9 @@ private:
 private:
 	char recv_buff_[kMaxSessionRecvBuffSize];
 	uint32_t fd_ = 0;
-	ssize_t cur_buff_position_ = 0;
+	ssize_t cur_buff_idx_ = 0;
 	ssize_t recv_packet_size_ = 0;
 
 };
-//class ClientSession
+//class Session
 }; //namespace hack

@@ -6,38 +6,43 @@
 namespace hack {
 	class Network;
 }
+namespace hack {
 
-class ServerApp {
-	//types.. (typdef, using nest stucts and classes)
-public:
-
-
-	//constants
-public:
+	class ServerApp {
+		//types.. (typdef, using nest stucts and classes)
+	public:
 
 
-	//factory functions, constructors and assignment operators, destructor
-public:
-	//constructors/destructor
-	ServerApp();
-	~ServerApp();
+		//constants
+	public:
 
 
-	//all other methods
-	void Init(Port port);
-	void Run();
-	void Destory();
-
-public:
-	//getters
-
-	//setters
-
-	//data members
+		//factory functions, constructors and assignment operators, destructor
+	public:
+		//constructors/destructor
+		ServerApp();
+		~ServerApp();
 
 
-private:
-	hack::Network* network = nullptr;
+		//all other methods
+		void Init(Port port);
+		void Run();
+		void Destory();
+
+	public:
+		//getters
+
+		//setters
+
+		//data members
+
+	protected:
+		void AddHandler();
+
+
+	private:
+		hack::Network* network = nullptr;
+
+	};
 
 };
-

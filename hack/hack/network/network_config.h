@@ -1,4 +1,13 @@
 #pragma once
 #include "../headers/common_headers.h"
 
-static constexpr uint16_t kMaxNetworkRecvBuffSize = 512;
+namespace hack {
+
+	constexpr uint16_t kListenSize = 5;
+	constexpr uint16_t kMaxEvents = 1000;
+	constexpr uint16_t kMaxNetworkRecvBuffSize = 512;
+
+};
+
+
+

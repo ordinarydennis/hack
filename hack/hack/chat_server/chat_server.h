@@ -2,7 +2,7 @@
 
 #include "../app/server_app.h"
 
-class ChatServer : public ServerApp {
+class ChatServer : public hack::ServerApp {
 	//types.. (typdef, using nest stucts and classes)
 public:
 
@@ -15,7 +15,6 @@ public:
 public:
 	ChatServer();
 	~ChatServer();
-
 
 public:
 	//getters

@@ -40,6 +40,9 @@
     <Filter Include="utils\tsqueue">
       <UniqueIdentifier>{e4959411-67b9-4385-92cd-37ab7fe25e92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\packet">
+      <UniqueIdentifier>{2f475bca-3a7e-4484-8775-aa6bab3448e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chat_server\chat_server.h">
@@ -71,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="network\session\session_config.h">
       <Filter>network\session</Filter>
+    </ClInclude>
+    <ClInclude Include="network\packet\packet.h">
+      <Filter>network\packet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

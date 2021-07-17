@@ -135,7 +135,7 @@ void Network::Accept() {
 			break;
 		}
 
-		auto session = new ClientSession;
+		auto session = new Session;
 		session->SetFD(client_socket);
 		event_->data.ptr = session;
 		event_->events = EPOLLIN | EPOLLET;
@@ -183,7 +183,7 @@ bool Network::RegisterEpollEvnet(const int socket, const uint32_t event) {
 void Network::RecvPacket(epoll_event* event) {
 
 	//여기도 다시 분석
-	auto session = static_cast<ClientSession*>(event->data.ptr);
+	auto session = static_cast<Session*>(event->data.ptr);
 	auto socket = session->FD();
 
 	ssize_t read_size = 0;
