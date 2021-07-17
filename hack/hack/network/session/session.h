@@ -9,6 +9,7 @@
 //and very short, methods may be defined inline.See Inline Functions for more details.
 //#include ""
 #include "../../headers/common_headers.h"
+#include "session_config.h"
 //
 //#include <>
 //
@@ -43,8 +44,6 @@ public:
 
 //private constants
 private:
-	static constexpr uint16_t kMaxSessionRecvBuffSize = 1024 * 10;
-	static constexpr uint16_t kMaxReadSize = 512;
 
 //private methods	
 private:

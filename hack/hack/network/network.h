@@ -56,8 +56,8 @@ private:
 	
 //private constants
 private:
-	uint16_t kListenSize = 5;
-	uint16_t kMaxEvents = 1000;
+	static constexpr uint16_t kListenSize = 5;
+	static constexpr uint16_t kMaxEvents = 1000;
 
 
 //private methods	

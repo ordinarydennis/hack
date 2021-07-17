@@ -11,7 +11,7 @@
     <ClCompile Include="network\network.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="network\session\client_session.cpp">
+    <ClCompile Include="network\session\session.cpp">
       <Filter>network\session</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,11 +60,17 @@
     <ClInclude Include="define\common_define.h">
       <Filter>define</Filter>
     </ClInclude>
-    <ClInclude Include="network\session\client_session.h">
+    <ClInclude Include="network\session\session.h">
       <Filter>network\session</Filter>
     </ClInclude>
     <ClInclude Include="utils\tsqueue\tsqueue.h">
       <Filter>utils\tsqueue</Filter>
+    </ClInclude>
+    <ClInclude Include="network\network_config.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="network\session\session_config.h">
+      <Filter>network\session</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

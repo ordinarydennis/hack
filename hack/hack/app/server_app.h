@@ -1,6 +1,11 @@
 #pragma once
 
 #include "../headers/common_headers.h"
+#include "../define/types_define.h"
+
+namespace hack {
+	class Network;
+}
 
 class ServerApp {
 	//types.. (typdef, using nest stucts and classes)
@@ -19,24 +24,20 @@ public:
 
 
 	//all other methods
+	void Init(Port port);
 	void Run();
-
+	void Destory();
 
 public:
 	//getters
 
 	//setters
 
-	//other methods
-	void Init();
-	void Destory();
-
-
 	//data members
 
 
 private:
-
+	hack::Network* network = nullptr;
 
 };
 

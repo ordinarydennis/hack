@@ -1,13 +1,19 @@
+//Related header
 #include "network.h"
-#include "session/client_session.h"
-//
+#include "session/session.h"
+#include "network_config.h"
+//C system headers
 #include <sys/socket.h>		//socket
 #include <netinet/in.h>		//sockaddr_in
 #include <fcntl.h>			//non blocking
 #include <sys/epoll.h>		//epoll
 #include <unistd.h>			// close build error solution
 #include <errno.h>			//errno
-//
+//C++ standard library headers
+//#include <>
+//other libraries' headers
+//#include <>
+
 
 namespace hack {
 
@@ -177,35 +183,35 @@ bool Network::RegisterEpollEvnet(const int socket, const uint32_t event) {
 void Network::RecvPacket(epoll_event* event) {
 
 	//여기도 다시 분석
-	//auto session = static_cast<ClientSession*>(event.data.ptr);
-	//auto socket = session->FD();
+	auto session = static_cast<ClientSession*>(event->data.ptr);
+	auto socket = session->FD();
 
-	//ssize_t read_size = 0;
+	ssize_t read_size = 0;
 
-	//do {
-	//	char buf[kMaxReadSize] = { 0, };
-	//	read_size = read(socket, buf, kMaxReadSize);
-	//	if (read_size == -1) {
+	do {
+		char buf[kMaxNetworkRecvBuffSize] = { 0, };
+		read_size = read(socket, buf, kMaxNetworkRecvBuffSize);
+		if (-1 == read_size) {
 
-	//		if (errno == EAGAIN) {
-	//			// if errno == EAGAIN, read all data
-	//		} else {
-	//			// this is other error, so Exit the loop
-	//			break;
-	//		}
+			if (errno == EAGAIN) {
+				// if errno == EAGAIN, read all data
+			} else {
+				// this is other error, so Exit the loop
+				break;
+			}
 
-	//	} else if (read_size == 0) { // EOF - remote closed connection
+		} else if (0== read_size) { // EOF - remote closed connection
 
-	//		if (nullptr != session) {
-	//			delete session;
-	//		}
-	//		close(socket);
-	//		break;
-	//	}
-	//	
-	//	session->RecvData(buf, read_size);
+			if (nullptr != session) {
+				delete session;
+			}
+			close(socket);
+			break;
+		}
+		
+		session->RecvData(buf, read_size);
 
-	//} while (true);
+	} while (true);
 
 }
 //
