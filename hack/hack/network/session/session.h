@@ -16,6 +16,9 @@
 //
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Packet;
+
 class Session {
 //types.. (typdef, using nest stucts and classes)
 public:
@@ -35,7 +38,7 @@ public:
 public:
 	//basic methods(init, run, destroy..)
 	//other methods
-	void RecvData(char* buff, ssize_t data_size);
+	void RecvData(char* buff, ssize_t data_size, Packet** packet);
 	//getters
 	const uint32_t FD() const { return fd_; };
 	//setters

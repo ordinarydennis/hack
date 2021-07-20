@@ -71,29 +71,7 @@ bool Network::Init(uint16_t port) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Network::Run() {
 
-	while (true) {
-		
-		auto n = epoll_wait(epoll_, epoll_event_list_, kMaxEvents, -1);
-
-		for (int i = 0; i < n; ++i) {
-
-			auto epoll_event = epoll_event_list_[i];
-
-			if (epoll_event.events & EPOLLERR ||
-				epoll_event.events & EPOLLHUP ||
-				!(epoll_event.events & EPOLLIN)) { // error
-
-				close(epoll_event_list_[i].data.fd);
-			}
-			else if (listen_socket_ == epoll_event_list_[i].data.fd) { // new connection
-				Accept();
-			}
-			else { // data to read
-				RecvPacket(&epoll_event);
-			}
-		}
-
-	}
+	EpollWait();
 
 }
 
@@ -193,14 +171,16 @@ void Network::RecvPacket(epoll_event* event) {
 		read_size = read(socket, buf, kMaxNetworkRecvBuffSize);
 		if (-1 == read_size) {
 
+			//todo print errno 
 			if (errno == EAGAIN) {
 				// if errno == EAGAIN, read all data
+				break;
 			} else {
 				// this is other error, so Exit the loop
 				break;
 			}
 
-		} else if (0== read_size) { // EOF - remote closed connection
+		} else if (0 == read_size) { // EOF - remote closed connection
 
 			if (nullptr != session) {
 				delete session;
@@ -209,10 +189,43 @@ void Network::RecvPacket(epoll_event* event) {
 			break;
 		}
 		
-		session->RecvData(buf, read_size);
+		Packet* p = nullptr;
+		session->RecvData(buf, read_size, &p);
+
+		if (nullptr != p){
+			pq_.Push(p);
+		}
 
 	} while (true);
 
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::EpollWait()
+{
+	while (true) {
+
+		auto n = epoll_wait(epoll_, epoll_event_list_, kMaxEvents, -1);
+
+		for (int i = 0; i < n; ++i) {
+
+			auto epoll_event = epoll_event_list_[i];
+
+			if (epoll_event.events & EPOLLERR ||
+				epoll_event.events & EPOLLHUP ||
+				!(epoll_event.events & EPOLLIN)) { // error
+
+				close(epoll_event_list_[i].data.fd);
+			}
+			else if (listen_socket_ == epoll_event_list_[i].data.fd) { // new connection
+				Accept();
+			}
+			else { // data to read
+				RecvPacket(&epoll_event);
+			}
+		}
+
+	}
 }
 //
 }; // namespace hack

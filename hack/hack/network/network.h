@@ -14,6 +14,8 @@
 //Related header,
 #include "../headers/common_headers.h"
 #include "../define/common_define.h"
+#include "../utils/tsqueue/tsqueue.h"
+#include "packet/packet.h"
 //C system headers
 //#include <>
 //C++ standard library headers
@@ -65,14 +67,17 @@ private:
 	bool MakeSocketNonBlocking(const int socket);
 	bool RegisterEpollEvnet(const int socket, const uint32_t event);
 	void RecvPacket(epoll_event* event);
+	void EpollWait();
 
 
-//data members	
+//private data members	
 private:
 	int listen_socket_ = INVALID_FD;
 	int epoll_ = INVALID_FD;
 	epoll_event* event_ = nullptr;
 	epoll_event* epoll_event_list_ = nullptr;
+	
+	TSQueue<Packet*> pq_;
 
 
 };

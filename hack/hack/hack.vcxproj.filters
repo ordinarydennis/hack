@@ -66,9 +66,6 @@
     <ClInclude Include="network\session\session.h">
       <Filter>network\session</Filter>
     </ClInclude>
-    <ClInclude Include="utils\tsqueue\tsqueue.h">
-      <Filter>utils\tsqueue</Filter>
-    </ClInclude>
     <ClInclude Include="network\network_config.h">
       <Filter>network</Filter>
     </ClInclude>
@@ -78,5 +75,6 @@
     <ClInclude Include="network\packet\packet.h">
       <Filter>network\packet</Filter>
     </ClInclude>
+    <ClInclude Include="utils\tsqueue\tsqueue.h" />
   </ItemGroup>
 </Project>
