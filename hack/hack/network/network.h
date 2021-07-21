@@ -38,7 +38,7 @@ public:
 
 //factory functions, constructors and assignment operators, destructor
 public:
-	Network();
+	explicit Network(uint32_t count_of_processor);
 	~Network();
 
 
@@ -60,12 +60,24 @@ private:
 private:
 
 
+//private static methods
+private:
+	static void* ProcessPacket(void*);
+
+
+//private static data members
+private:
+
+
+
 //private methods	
 private:
 	bool Bind(const int socket, const uint16_t port);
 	void Accept();
 	bool MakeSocketNonBlocking(const int socket);
 	bool RegisterEpollEvnet(const int socket, const uint32_t event);
+	bool CreateThread(const uint32_t count_of_processor);
+	void DistroyThread(const uint32_t count_of_processor);
 	void RecvPacket(epoll_event* event);
 	void EpollWait();
 
@@ -77,7 +89,11 @@ private:
 	epoll_event* event_ = nullptr;
 	epoll_event* epoll_event_list_ = nullptr;
 	
-	TSQueue<Packet*> pq_;
+	TSQueue<Packet*> packet_queue_;
+
+	pthread_t* thread_id_list_ = nullptr;
+
+	uint32_t count_of_processor_ = 0;
 
 
 };

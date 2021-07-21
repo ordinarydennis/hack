@@ -9,6 +9,7 @@
 #include <sys/epoll.h>		//epoll
 #include <unistd.h>			// close build error solution
 #include <errno.h>			//errno
+#include <pthread.h>
 //C++ standard library headers
 //#include <>
 //other libraries' headers
@@ -18,24 +19,31 @@
 namespace hack {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Network::Network() {
+Network::Network(uint32_t count_of_processor) 
+	:count_of_processor_(count_of_processor) {
 
 	event_ = new epoll_event;
 	epoll_event_list_ = new epoll_event[kMaxEvents];
+	thread_id_list_ = new pthread_t[count_of_processor];
 	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Network::~Network() {
 
-	if (nullptr == event_) {
+	if (nullptr != event_) {
 		delete event_;
-		event_ = nullptr;
 	}
 
-	if (nullptr == epoll_event_list_) {
+	if (nullptr != epoll_event_list_) {
 		delete[] epoll_event_list_;
 	}
+
+	if (nullptr != thread_id_list_) {
+		delete[] thread_id_list_;
+	}
+
+	DistroyThread(count_of_processor_);
 
 }
 
@@ -64,6 +72,8 @@ bool Network::Init(uint16_t port) {
 	}
 
 	RegisterEpollEvnet(listen_socket_, EPOLLIN | EPOLLET);
+
+	CreateThread(count_of_processor_);
 
 	return true;
 }
@@ -158,6 +168,36 @@ bool Network::RegisterEpollEvnet(const int socket, const uint32_t event) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Network::CreateThread(const uint32_t count_of_processor) {
+
+	bool isSuccess = true;
+
+	for (uint32_t i = 0; i < count_of_processor; i++) {
+		int err = pthread_create(&thread_id_list_[i], NULL, ProcessPacket, this);
+		// Check if thread is created sucessfuly
+		if (err)
+		{
+			//std::cout << "Thread creation failed : " << strerror(err);
+			//return err;
+			isSuccess = false;
+			break;
+		}
+	}
+
+	return isSuccess;
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::DistroyThread(const uint32_t count_of_processor) {
+
+	for (uint32_t i = 0; i < count_of_processor; i++) {
+		pthread_join(thread_id_list_[i], NULL);
+	}
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Network::RecvPacket(epoll_event* event) {
 
 	//여기도 다시 분석
@@ -167,6 +207,7 @@ void Network::RecvPacket(epoll_event* event) {
 	ssize_t read_size = 0;
 
 	do {
+
 		char buf[kMaxNetworkRecvBuffSize] = { 0, };
 		read_size = read(socket, buf, kMaxNetworkRecvBuffSize);
 		if (-1 == read_size) {
@@ -193,7 +234,7 @@ void Network::RecvPacket(epoll_event* event) {
 		session->RecvData(buf, read_size, &p);
 
 		if (nullptr != p){
-			pq_.Push(p);
+			packet_queue_.Push(p);
 		}
 
 	} while (true);
@@ -203,7 +244,7 @@ void Network::RecvPacket(epoll_event* event) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Network::EpollWait()
 {
-	while (true) {
+	do{
 
 		auto n = epoll_wait(epoll_, epoll_event_list_, kMaxEvents, -1);
 
@@ -225,7 +266,24 @@ void Network::EpollWait()
 			}
 		}
 
-	}
+	} while (true);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void* Network::ProcessPacket(void* args)
+{
+	Network* net = static_cast<Network*>(args);
+
+	do {
+
+		auto p = net->packet_queue_.Pop();
+		if (std::nullopt == p) {
+			continue;
+		}
+
+	} while (true);
+
+	return nullptr;
 }
 //
 }; // namespace hack

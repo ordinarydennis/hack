@@ -2,7 +2,7 @@
 #include "server_app.h"
 #include "../network/network.h"
 //C system headers
-//#include <>
+#include <thread>
 //C++ standard library headers
 //#include <>
 //other libraries' headers
@@ -13,15 +13,19 @@ namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ServerApp::ServerApp() {
 
+	//쓰레드 수 얻기
+	count_of_processor_ = std::thread::hardware_concurrency();
+
 	//네트워크 초기화 
-	network = new hack::Network;
+	network_ = new hack::Network(count_of_processor_);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ServerApp::~ServerApp() {
 
-	if (nullptr != network) {
-		delete network;
+	if (nullptr != network_) {
+		delete network_;
 	}
 
 }
@@ -29,20 +33,20 @@ ServerApp::~ServerApp() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ServerApp::Init(Port port) {
 
-	network->Init(port);
+	network_->Init(port);
 
 }
 
 void ServerApp::AddHandler()
 {
 	//네트워크에 등록
-	//network
+	//network_
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ServerApp::Run() {
 
-	network->Run();
+	network_->Run();
 
 }
 

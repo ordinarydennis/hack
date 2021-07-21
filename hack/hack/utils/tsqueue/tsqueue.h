@@ -48,7 +48,7 @@ public:
 	std::optional<T> Pop() {
 		std::lock_guard<std::mutex> lock(mutex_);
 		if (queue_.empty()) {
-			return {};
+			return std::nullopt;
 		}
 		T tmp = queue_.front();
 		queue_.pop();
