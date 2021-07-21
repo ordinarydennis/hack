@@ -272,7 +272,7 @@ void Network::EpollWait()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void* Network::ProcessPacket(void* args)
 {
-	Network* net = static_cast<Network*>(args);
+	Network* net = reinterpret_cast<Network*>(args);
 
 	do {
 
