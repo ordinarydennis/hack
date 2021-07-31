@@ -35,6 +35,7 @@ void ServerApp::Init(Port port) {
 
 	network_->Init(port);
 
+
 }
 
 void ServerApp::AddHandler()

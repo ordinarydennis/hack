@@ -11,17 +11,23 @@
 //Include headers in the following order : Related header, C system headers, C++ standard library headers, 
 //other libraries' headers, your project's headers.
 
-//Related header,
+//Related header(class.h, class.cpp)
+//#include <>
+
+//C system headers
+//#include <>
+
+//C++ standard library headers
+//#include <>
+
+//other libraries' headers
+//#include <>
+
+//your project's headers.
 #include "../headers/common_headers.h"
 #include "../define/common_define.h"
 #include "../utils/tsqueue/tsqueue.h"
 #include "packet/packet.h"
-//C system headers
-//#include <>
-//C++ standard library headers
-//#include <>
-//other libraries' headers
-//#include "../define/common_define.h"
 
 struct epoll_event;
 //

@@ -1,5 +1,18 @@
 #pragma once
 
+//Related header(class.h, class.cpp)
+//#include <>
+
+//C system headers
+//#include <>
+
+//C++ standard library headers
+#include <unordered_map>
+
+//other libraries' headers
+//#include <>
+
+//your project's headers.
 #include "../headers/common_headers.h"
 #include "../define/types_define.h"
 
@@ -42,6 +55,7 @@ protected:
 private:
 	uint32_t		count_of_processor_ = 0;
 	hack::Network*	network_ = nullptr;
+	//std::unordered_map<>
 
 };
 
