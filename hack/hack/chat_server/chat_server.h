@@ -22,11 +22,20 @@ public:
 	//setters
 
 	//other methods
+	void Init(hack::Port port);
+
 
 	//data members
+private:
+	
+
+	//methods
+public:
 
 
+	//data members
 private:
 
+	
 };
 

@@ -18,7 +18,8 @@
 //#include <>
 
 //C++ standard library headers
-//#include <>
+#include <unordered_map>
+#include <functional>
 
 //other libraries' headers
 //#include <>
@@ -36,7 +37,7 @@ namespace hack {
 class Network {
 //types(including typedef, using, and nested structsand classes)
 public:
-
+	using handler = std::function<void(const Packet* p)>;
 
 //constants
 public:
@@ -45,6 +46,7 @@ public:
 //factory functions, constructors and assignment operators, destructor
 public:
 	explicit Network(uint32_t count_of_processor);
+
 	~Network();
 
 
@@ -52,9 +54,14 @@ public:
 public:
 	//basic methods(init, run, destroy..)
 	bool Init(uint16_t port);
+
 	void Run();
+
 	//other methods
+	void AddHandler(PacketId packet_id, handler h);
+	
 	//getters
+	
 	//setters
 
 
@@ -79,27 +86,39 @@ private:
 //private methods	
 private:
 	bool Bind(const int socket, const uint16_t port);
+
 	void Accept();
+
 	bool MakeSocketNonBlocking(const int socket);
+
 	bool RegisterEpollEvnet(const int socket, const uint32_t event);
+
 	bool CreateThread(const uint32_t count_of_processor);
+
 	void DistroyThread(const uint32_t count_of_processor);
+
 	void RecvPacket(epoll_event* event);
+
 	void EpollWait();
 
 
 //private data members	
 private:
 	int listen_socket_ = INVALID_FD;
+
 	int epoll_ = INVALID_FD;
+
+	uint32_t count_of_processor_ = 0;
+
 	epoll_event* event_ = nullptr;
+
 	epoll_event* epoll_event_list_ = nullptr;
-	
-	TSQueue<Packet*> packet_queue_;
 
 	pthread_t* thread_id_list_ = nullptr;
 
-	uint32_t count_of_processor_ = 0;
+	TSQueue<Packet*> packet_queue_;
+
+	std::unordered_map<PacketId, handler>	packet_handler_map_;
 
 
 };

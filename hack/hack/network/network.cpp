@@ -86,6 +86,13 @@ void Network::Run() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::AddHandler(PacketId packet_id, handler h)
+{
+	//네트워크에 등록
+	packet_handler_map_.emplace(packet_id, h);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool Network::Bind(const int socket, uint16_t port) {
 
 	sockaddr_in sock_addr_in;
@@ -281,10 +288,14 @@ void* Network::ProcessPacket(void* args)
 			continue;
 		}
 
-		//p->packet_id_;
+		auto packet = p.value();
 
+		auto it = net->packet_handler_map_.find(packet->header_.packet_id_);
+		if (net->packet_handler_map_.end() != it) {
 
+			it->second(packet);
 
+		}
 
 		//Sleep?
 

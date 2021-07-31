@@ -1,10 +1,17 @@
 #include "chat_server.h"
+#include <iostream>
+
+
+void TestHandler(const hack::Packet* p)
+{
+	int a = 10;
+	int b = a;
+
+	std::cout << b << std::endl;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ChatServer::ChatServer() {
-
-	//add handler
-	AddHandler();
 
 
 }
@@ -13,6 +20,16 @@ ChatServer::ChatServer() {
 ChatServer::~ChatServer() {
 	
 }
+
+void ChatServer::Init(hack::Port port)
+{
+	ServerApp::Init(port);
+
+	ServerApp::AddHandler(21, TestHandler);
+
+}
+
+
 
 
 

@@ -5,15 +5,17 @@
 
 namespace hack {
 
+	using PacketId = uint16_t;
+
 #pragma pack(push, 1)
 
 struct Header {
 	uint16_t size_ = 0;
-	uint16_t packet_id_ = 0;
+	PacketId packet_id_ = 0;
 };
 
 struct Packet {
-	uint64_t clientFrom_ = 0;
+	//uint64_t clientFrom_ = 0;
 	Header	header_;
 	//char body_[MAX_SOCKBUF] = { 0, };
 
