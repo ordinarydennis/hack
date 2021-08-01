@@ -7,13 +7,26 @@
 //assignment operators, destructor, all other methods, data members.
 //Do not put large method definitions inline in the class definition. Usually, only trivial or performance - critical, 
 //and very short, methods may be defined inline.See Inline Functions for more details.
-//#include ""
+
+//Include headers in the following order : Related header, C system headers, C++ standard library headers, 
+//other libraries' headers, your project's headers.
+
+//Related header(class.h, class.cpp)
+//#include <>
+
+//C system headers
+//#include <>
+
+//C++ standard library headers
+
+//other libraries' headers
+//#include <>
+
+//your project's headers.
 #include "../../headers/common_headers.h"
 #include "session_config.h"
-//
-//#include <>
-//
-//
+
+
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

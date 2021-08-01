@@ -76,7 +76,28 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ProjectPublicIncludePath>$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ProjectPublicIncludePath>../thirdparty/fmt/include;</ProjectPublicIncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="app\server_app.cpp" />
@@ -84,8 +105,22 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="network\network.cpp" />
     <ClCompile Include="network\session\session.cpp" />
+    <ClCompile Include="utils\logger\logger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\args.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\chrono.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\color.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\compile.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\core.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\format-inl.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\format.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\locale.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\os.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\ostream.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\printf.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\ranges.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\xchar.h" />
     <ClInclude Include="app\server_app.h" />
     <ClInclude Include="chat_server\chat_server.h" />
     <ClInclude Include="define\common_define.h" />
@@ -96,6 +131,7 @@
     <ClInclude Include="network\packet\packet.h" />
     <ClInclude Include="network\session\session.h" />
     <ClInclude Include="network\session\session_config.h" />
+    <ClInclude Include="utils\logger\logger.h" />
     <ClInclude Include="utils\tsqueue\tsqueue.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -249,8 +249,8 @@ void Network::RecvPacket(epoll_event* event) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Network::EpollWait()
-{
+void Network::EpollWait() {
+	
 	do{
 
 		auto n = epoll_wait(epoll_, epoll_event_list_, kMaxEvents, -1);
@@ -277,8 +277,8 @@ void Network::EpollWait()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void* Network::ProcessPacket(void* args)
-{
+void* Network::ProcessPacket(void* args) {
+	
 	Network* net = reinterpret_cast<Network*>(args);
 
 	do {

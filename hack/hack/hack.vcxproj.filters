@@ -14,6 +14,9 @@
     <ClCompile Include="network\session\session.cpp">
       <Filter>network\session</Filter>
     </ClCompile>
+    <ClCompile Include="utils\logger\logger.cpp">
+      <Filter>utils\logger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="network">
@@ -37,11 +40,20 @@
     <Filter Include="utils">
       <UniqueIdentifier>{80b7fd55-3d98-4288-8bdb-a9003fb98fe4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils\tsqueue">
-      <UniqueIdentifier>{e4959411-67b9-4385-92cd-37ab7fe25e92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="network\packet">
       <UniqueIdentifier>{2f475bca-3a7e-4484-8775-aa6bab3448e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{53c2251e-1387-4471-ade1-f69240e87056}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\fmt">
+      <UniqueIdentifier>{6c0ceaab-67ed-499c-b78d-fb8f6acc71d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\logger">
+      <UniqueIdentifier>{8a2ffe97-91d1-441e-aa00-01c68d6a54be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network\tsqueue">
+      <UniqueIdentifier>{e4959411-67b9-4385-92cd-37ab7fe25e92}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +87,50 @@
     <ClInclude Include="network\packet\packet.h">
       <Filter>network\packet</Filter>
     </ClInclude>
-    <ClInclude Include="utils\tsqueue\tsqueue.h" />
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\args.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\chrono.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\color.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\compile.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\core.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\format.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\format-inl.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\locale.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\os.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\ostream.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\printf.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\ranges.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thirdparty\fmt\include\fmt\xchar.h">
+      <Filter>thirdparty\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\tsqueue\tsqueue.h">
+      <Filter>network\tsqueue</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\logger\logger.h">
+      <Filter>utils\logger</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
