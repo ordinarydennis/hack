@@ -1,8 +1,13 @@
-#include <cstdio>
 
 #include "chat_server/chat_server.h"
 
+
+
+
+
 int main() {
+
+	hack::Log("Start main()");
 
 	ChatServer chatServer;
 

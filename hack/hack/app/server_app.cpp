@@ -33,8 +33,14 @@ ServerApp::~ServerApp() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ServerApp::Init(Port port) {
 
-	network_->Init(port);
-
+	if (network_->Init(port))
+	{
+		Log("ServerApp::Init is Success");
+	}
+	else
+	{
+		Log("ServerApp::Init is failure");
+	}
 
 }
 
@@ -52,7 +58,10 @@ void ServerApp::Destory() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ServerApp::AddHandler(PacketId packet_id, Network::handler h) {
+
+	Log("ServerApp::AddHandler packet_id : {}", packet_id);
 	network_->AddHandler(packet_id, h);
+
 }
 
 };

@@ -2,8 +2,6 @@
 #include "logger.h"
 
 //C system headers
-#include <cstdint>	// uint16_t..
-#include <unistd.h> // close build error solution
 
 //C++ standard library headers
 
@@ -14,7 +12,11 @@
 
 namespace hack {
 
-
+	std::string vformat(fmt::string_view format_str, fmt::format_args args)
+	{
+		return fmt::vformat(format_str, args);
+	}
 
 }
+
 
