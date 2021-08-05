@@ -13,7 +13,6 @@
 
 //your project's headers.
 #include "../headers/common_headers.h"
-#include "../define/types_define.h"
 #include "../network/network.h"
 
 namespace hack {
@@ -44,7 +43,7 @@ public:
 
 	void Destory();
 
-	void AddHandler(PacketId packet_id, Network::handler h);
+	void AddHandler(PacketId packet_id, Network::PacketHandler h);
 
 
 public:

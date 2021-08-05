@@ -16,7 +16,7 @@ Session::~Session() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Session::RecvData(char* buff, ssize_t data_size, Packet** packet) {
+void Session::RecvData(char* buff, ssize_t data_size, Packet* packet) {
 
 	//받은 데이터 수신 버퍼에 복사
 	char* cur_recv_buff_pos = recv_buff_ + cur_buff_idx_;
@@ -45,10 +45,13 @@ void Session::RecvData(char* buff, ssize_t data_size, Packet** packet) {
 		return;
 	}
 
-	//패킷을 모두 받았다면 헤더 포인터를 큐에 넣는다. 
-	*packet = reinterpret_cast<Packet*>(recv_packet_start_pos);
+	packet->header_ = header;
 
-	//패킷 핸들러에 넘기기 
+	char* recv_packet_body_start_pos = recv_packet_start_pos + header_size;
+
+	//패킷을 모두 받았다면 헤더 포인터를 큐에 넣는다. 
+	//*packet = reinterpret_cast<Packet*>(recv_packet_start_pos);
+	packet->body_ = reinterpret_cast<char*>(recv_packet_body_start_pos);
 
 	recv_packet_size_ = 0;
 

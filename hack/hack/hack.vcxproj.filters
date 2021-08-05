@@ -132,5 +132,8 @@
     <ClInclude Include="utils\logger\logger.h">
       <Filter>utils\logger</Filter>
     </ClInclude>
+    <ClInclude Include="chat_server\handlers.h">
+      <Filter>chat_server</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

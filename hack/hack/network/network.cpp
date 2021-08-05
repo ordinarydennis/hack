@@ -1,7 +1,6 @@
 //Related header
 #include "network.h"
-#include "session/session.h"
-#include "network_config.h"
+
 //C system headers
 #include <sys/socket.h>		//socket
 #include <netinet/in.h>		//sockaddr_in
@@ -15,8 +14,19 @@
 //other libraries' headers
 //#include <>
 
+//your project's headers.
+#include "session/session.h"
+#include "network_config.h"
 
 namespace hack {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//todo 적절한 위치로 이동
+void SendHelper(const Fd fd, const char* buf, const uint16_t size) {
+
+	Log("SendHelper fd {}", fd);
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Network::Network(uint32_t count_of_processor) 
@@ -86,7 +96,7 @@ void Network::Run() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Network::AddHandler(PacketId packet_id, handler h)
+void Network::AddPacketHandler(PacketId packet_id, PacketHandler h)
 {
 	//네트워크에 등록
 	packet_handler_map_.emplace(packet_id, h);
@@ -205,9 +215,9 @@ void Network::DistroyThread(const uint32_t count_of_processor) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Network::RecvPacket(epoll_event* event) {
+void Network::RecvPacket(const int& epoll, epoll_event* event) {
 
-	//여기도 다시 분석
+	//todo 여기도 다시 분석
 	auto session = static_cast<Session*>(event->data.ptr);
 	auto socket = session->FD();
 
@@ -230,21 +240,38 @@ void Network::RecvPacket(epoll_event* event) {
 
 		} else if (0 == read_size) { // EOF - remote closed connection
 
+			epoll_ctl(epoll, EPOLL_CTL_DEL, socket, NULL);
+			close(socket);
+
 			if (nullptr != session) {
 				delete session;
 			}
-			close(socket);
+
 			break;
 		}
 		
-		Packet* p = nullptr;
+		//Packet* p = nullptr;
+		Packet p;
+		p.fd_ = socket;
 		session->RecvData(buf, read_size, &p);
 
-		if (nullptr != p){
+		if (nullptr != p.body_){
 			packet_queue_.Push(p);
 		}
 
 	} while (true);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::SendPacket(const Fd fd, const char* buf, const uint16_t size) {
+
+	auto send_size = write(fd, buf, size);
+
+	if (-1 == send_size)
+	{
+		//todo log
+	}
 
 }
 
@@ -269,7 +296,7 @@ void Network::EpollWait() {
 				Accept();
 			}
 			else { // data to read
-				RecvPacket(&epoll_event);
+				RecvPacket(epoll_, &epoll_event);
 			}
 		}
 
@@ -290,10 +317,10 @@ void* Network::ProcessPacket(void* args) {
 
 		auto packet = p.value();
 
-		auto it = net->packet_handler_map_.find(packet->header_.packet_id_);
+		auto it = net->packet_handler_map_.find(packet.header_.packet_id_);
 		if (net->packet_handler_map_.end() != it) {
 
-			it->second(packet);
+			it->second(SendHelper, packet);
 
 		}
 

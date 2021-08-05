@@ -19,14 +19,12 @@
 
 //C++ standard library headers
 #include <unordered_map>
-#include <functional>
 
 //other libraries' headers
 //#include <>
 
 //your project's headers.
 #include "../headers/common_headers.h"
-#include "../define/common_define.h"
 #include "../utils/tsqueue/tsqueue.h"
 #include "packet/packet.h"
 
@@ -34,10 +32,14 @@ struct epoll_event;
 //
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void SendHelper(const Fd fd, const char* buf, const SendBuffSize size);
+
 class Network {
 //types(including typedef, using, and nested structsand classes)
 public:
-	using handler = std::function<void(const Packet* p)>;
+	//todo SendHelperFp 이거 이름 더 좋은걸로 바꾸자
+	using PacketHandler = std::function<void(SendHelperFp, const Packet& p)>;
 
 //constants
 public:
@@ -58,8 +60,8 @@ public:
 	void Run();
 
 	//other methods
-	void AddHandler(PacketId packet_id, handler h);
-	
+	void AddPacketHandler(PacketId packet_id, PacketHandler h);
+
 	//getters
 	
 	//setters
@@ -97,7 +99,9 @@ private:
 
 	void DistroyThread(const uint32_t count_of_processor);
 
-	void RecvPacket(epoll_event* event);
+	void RecvPacket(const int& epoll, epoll_event* event);
+
+	void SendPacket(const Fd fd, const char* buf, const uint16_t size);
 
 	void EpollWait();
 
@@ -116,9 +120,9 @@ private:
 
 	pthread_t* thread_id_list_ = nullptr;
 
-	TSQueue<Packet*> packet_queue_;
+	TSQueue<Packet> packet_queue_;
 
-	std::unordered_map<PacketId, handler>	packet_handler_map_;
+	std::unordered_map<PacketId, PacketHandler>	packet_handler_map_;
 
 
 };

@@ -15,8 +15,11 @@ struct Header {
 };
 
 struct Packet {
-	//uint64_t clientFrom_ = 0;
-	Header	header_;
+	Fd			fd_ = 0;
+	Header		header_;
+	char*		body_ = nullptr;
+	
+	
 	//char body_[MAX_SOCKBUF] = { 0, };
 
 	//stPacket(UINT32 ClientFrom, UINT32 ClientTo, stPacketHeader Header, const char* Body, size_t size)

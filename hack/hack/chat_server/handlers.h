@@ -1,10 +1,11 @@
 #pragma once
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void TestHandler(const hack::Packet* p)
+void TestHandler(hack::SendHelperFp sendhelper, const hack::Packet& p)
 {
-	int a = 10;
-	int b = a;
+	char buf[123] = { "aasdfq1112234" };
 
-	std::cout << b << std::endl;
+	hack::SendBuffSize buffSize = static_cast<hack::SendBuffSize>(strlen(buf));
+
+	sendhelper(p.fd_, buf, buffSize);
 }

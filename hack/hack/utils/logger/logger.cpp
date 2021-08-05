@@ -12,9 +12,10 @@
 
 namespace hack {
 
-	std::string vformat(fmt::string_view format_str, fmt::format_args args)
-	{
+	std::string vFormat(fmt::string_view format_str, fmt::format_args args) {
+
 		return fmt::vformat(format_str, args);
+
 	}
 
 }

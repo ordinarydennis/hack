@@ -123,6 +123,7 @@
     <ClInclude Include="..\thirdparty\fmt\include\fmt\xchar.h" />
     <ClInclude Include="app\server_app.h" />
     <ClInclude Include="chat_server\chat_server.h" />
+    <ClInclude Include="chat_server\handlers.h" />
     <ClInclude Include="define\common_define.h" />
     <ClInclude Include="define\types_define.h" />
     <ClInclude Include="headers\common_headers.h" />
