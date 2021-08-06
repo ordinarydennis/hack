@@ -22,11 +22,26 @@ namespace hack {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //todo 적절한 위치로 이동
-void SendHelper(const Fd fd, const char* buf, const uint16_t size) {
+void SendHelper(const Fd fd, const PacketId packet_id, const char* body, const uint16_t body_size) {
 
 	Log("SendHelper fd {}", fd);
 
-	auto send_size = write(fd, buf, size);
+	//header
+	hack::Packet ackPacket;
+
+	ackPacket.header_.size_ = static_cast<uint16_t>(sizeof(ackPacket) + body_size);
+	ackPacket.header_.packet_id_ = packet_id;
+
+	char sendBuf[256] = { 0, };
+
+	//copy header
+	memcpy(sendBuf, reinterpret_cast<char*>(&ackPacket), sizeof(ackPacket));
+
+	//copy body
+	memcpy(sendBuf + sizeof(ackPacket), body, body_size);
+
+
+	auto send_size = write(fd, sendBuf, ackPacket.header_.size_);
 
 	if (-1 == send_size) {
 
@@ -314,14 +329,14 @@ void* Network::ProcessPacket(void* args) {
 
 		auto fdPacketPair = p.value();
 
-		//auto fd = fdPacketPair.first;
+		auto fd = fdPacketPair.first;
 		auto packet = fdPacketPair.second;
 
 		auto it = net->packet_handler_map_.find(packet->header_.packet_id_);
 
 		if (net->packet_handler_map_.end() != it) {
 
-			it->second(SendHelper, packet);
+			it->second(fd, packet, SendHelper);
 
 		}
 

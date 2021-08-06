@@ -33,13 +33,13 @@ struct epoll_event;
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendHelper(const Fd fd, const char* buf, const SendBufSize size);
+void SendHelper(const Fd fd, const PacketId packet_id, const char* body, const uint16_t body_size);
 
 class Network {
 //types(including typedef, using, and nested structsand classes)
 public:
 	//todo SendHelperFp 이거 이름 더 좋은걸로 바꾸자
-	using PacketHandler = std::function<void(SendHelperFp, const Packet* p)>;
+	using PacketHandler = std::function<void(const Fd, const Packet*, SendHelperFp)>;
 	using FdPacketPair = std::pair<Fd, Packet*>;
 
 //constants

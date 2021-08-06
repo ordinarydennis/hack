@@ -14,7 +14,10 @@ namespace hack {
 	using SendBufSize = uint16_t;
 
 	//todo 이거 위치 어디로??
-	using SendHelperFp = std::function<void(const Fd fd, const char* buf, const SendBufSize size)>;
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	using SendHelperFp = std::function<
+		void(const Fd fd, const PacketId packet_id, const char* buf, const SendBufSize size)
+	>;
 
 };
  

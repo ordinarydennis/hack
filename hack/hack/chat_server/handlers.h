@@ -4,7 +4,7 @@
 #include "packet_define_ack.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void HandlerReqLogin(hack::SendHelperFp sendhelper, const hack::Packet* packet) {
+void HandlerReqLogin(const hack::Fd fd, const hack::Packet* packet, hack::SendHelperFp sendhelper) {
 
 	hack::Log("HandlerReqLogin packet_id_: {}, size_: {}", packet->header_.packet_id_, packet->header_.size_);
 
@@ -19,24 +19,11 @@ void HandlerReqLogin(hack::SendHelperFp sendhelper, const hack::Packet* packet) 
 	hack::Log("HandlerReqLogin id: {}, pw: {}", pdReqLogin->id_, pdReqLogin->pw_);
 
 
-	//header
-	hack::Packet ackPacket;
-
 	//body
 	PdAckLogin pdAckLogin;
 	pdAckLogin.result_ = 1;
 
-	ackPacket.header_.size_ = sizeof(ackPacket) + sizeof(pdAckLogin);
-	ackPacket.header_.packet_id_ = 22;
-
-	char sendBuf[256] = { 0, };
-
-	//copy header
-	memcpy(sendBuf, reinterpret_cast<char*>(&ackPacket), sizeof(ackPacket));
-
-	//copy body
-	memcpy(sendBuf + sizeof(ackPacket), reinterpret_cast<char*>(&pdAckLogin), sizeof(pdAckLogin));
-
-	sendhelper(5, sendBuf, ackPacket.header_.size_);
+	//todo session을 인자로 넘기는게 낫나?
+	sendhelper(fd, 22, reinterpret_cast<const char*>(&pdAckLogin), sizeof(pdAckLogin));
 
 }
