@@ -20,7 +20,7 @@ void ChatServer::Init(hack::Port port)
 
 	ServerApp::Init(port);
 
-	AddHandler(21, TestHandler);
+	AddHandler(21, HandlerReqLogin);
 
 }
 

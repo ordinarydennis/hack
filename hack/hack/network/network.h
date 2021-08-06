@@ -33,13 +33,14 @@ struct epoll_event;
 namespace hack {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SendHelper(const Fd fd, const char* buf, const SendBuffSize size);
+void SendHelper(const Fd fd, const char* buf, const SendBufSize size);
 
 class Network {
 //types(including typedef, using, and nested structsand classes)
 public:
 	//todo SendHelperFp 이거 이름 더 좋은걸로 바꾸자
-	using PacketHandler = std::function<void(SendHelperFp, const Packet& p)>;
+	using PacketHandler = std::function<void(SendHelperFp, const Packet* p)>;
+	using FdPacketPair = std::pair<Fd, Packet*>;
 
 //constants
 public:
@@ -101,8 +102,6 @@ private:
 
 	void RecvPacket(const int& epoll, epoll_event* event);
 
-	void SendPacket(const Fd fd, const char* buf, const uint16_t size);
-
 	void EpollWait();
 
 
@@ -120,7 +119,7 @@ private:
 
 	pthread_t* thread_id_list_ = nullptr;
 
-	TSQueue<Packet> packet_queue_;
+	TSQueue<FdPacketPair> packet_queue_;
 
 	std::unordered_map<PacketId, PacketHandler>	packet_handler_map_;
 

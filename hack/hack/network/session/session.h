@@ -51,7 +51,7 @@ public:
 public:
 	//basic methods(init, run, destroy..)
 	//other methods
-	void RecvData(char* buff, ssize_t data_size, Packet* packet);
+	void RecvData(char* buf, ssize_t data_size, Packet** packet);
 
 	//getters
 	const Fd FD() const { return fd_; };
@@ -69,9 +69,9 @@ private:
 
 //data members
 private:
-	char		recv_buff_[kMaxSessionRecvBuffSize];
+	char		recv_buf_[kMaxSessionRecvBufSize];
 	Fd			fd_ = 0;
-	ssize_t		cur_buff_idx_ = 0;
+	ssize_t		cur_buf_idx_ = 0;
 	ssize_t		recv_packet_size_ = 0;
 
 };

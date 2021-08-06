@@ -16,14 +16,14 @@ Session::~Session() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Session::RecvData(char* buff, ssize_t data_size, Packet* packet) {
+void Session::RecvData(char* buf, ssize_t data_size, Packet** packet) {
 
 	//받은 데이터 수신 버퍼에 복사
-	char* cur_recv_buff_pos = recv_buff_ + cur_buff_idx_;
-	memcpy(cur_recv_buff_pos, buff, data_size);
+	char* cur_recv_buf_pos = recv_buf_ + cur_buf_idx_;
+	memcpy(cur_recv_buf_pos, buf, data_size);
 	
 	//다음 위치 세팅
-	cur_buff_idx_ += data_size;
+	cur_buf_idx_ += data_size;
 
 	//현재까지 수신 받은 패킷 크기 
 	recv_packet_size_ += data_size;
@@ -35,7 +35,7 @@ void Session::RecvData(char* buff, ssize_t data_size, Packet* packet) {
 	}
 
 	//수신 패킷의 시작 위치
-	char* recv_packet_start_pos = recv_buff_ + cur_buff_idx_ - recv_packet_size_;
+	char* recv_packet_start_pos = recv_buf_ + cur_buf_idx_ - recv_packet_size_;
 
 	//헤더 크기 이상 수신 받았다면 헤더를 확인한다.
 	Header header;
@@ -45,22 +45,23 @@ void Session::RecvData(char* buff, ssize_t data_size, Packet* packet) {
 		return;
 	}
 
-	packet->header_ = header;
-
-	char* recv_packet_body_start_pos = recv_packet_start_pos + header_size;
+	//todo 아래 코드 삭제
+	//packet->header_ = header;
+	//char* recv_packet_body_start_pos = recv_packet_start_pos + header_size;
 
 	//패킷을 모두 받았다면 헤더 포인터를 큐에 넣는다. 
-	//*packet = reinterpret_cast<Packet*>(recv_packet_start_pos);
-	packet->body_ = reinterpret_cast<char*>(recv_packet_body_start_pos);
+	*packet = reinterpret_cast<Packet*>(recv_packet_start_pos);
+	//todo 아래 코드 삭제
+	//packet->body_ = reinterpret_cast<char*>(recv_packet_body_start_pos);
 
 	recv_packet_size_ = 0;
 
 	//사용 버퍼의 잔량이 얼마 남지 않았다면 write 위치를 초기화 한다.
 	//1024 한 패킷의 최대 크기
 	//todo 여기는 잘 모르겠다 다시 보자
-	if (kMaxSessionRecvBuffSize <= cur_buff_idx_ + 1024)
+	if (kMaxSessionRecvBufSize <= cur_buf_idx_ + 1024)
 	{
-		cur_buff_idx_ = 0;
+		cur_buf_idx_ = 0;
 	}
 }
 }; //namespace hack

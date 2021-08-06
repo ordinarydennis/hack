@@ -15,10 +15,7 @@ struct Header {
 };
 
 struct Packet {
-	Fd			fd_ = 0;
 	Header		header_;
-	char*		body_ = nullptr;
-	
 	
 	//char body_[MAX_SOCKBUF] = { 0, };
 

@@ -26,6 +26,14 @@ void SendHelper(const Fd fd, const char* buf, const uint16_t size) {
 
 	Log("SendHelper fd {}", fd);
 
+	auto send_size = write(fd, buf, size);
+
+	if (-1 == send_size) {
+
+		Log("SendHelper send failure fd {}", fd);
+
+	}
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,8 +233,8 @@ void Network::RecvPacket(const int& epoll, epoll_event* event) {
 
 	do {
 
-		char buf[kMaxNetworkRecvBuffSize] = { 0, };
-		read_size = read(socket, buf, kMaxNetworkRecvBuffSize);
+		char buf[kMaxNetworkRecvBufSize] = { 0, };
+		read_size = read(socket, buf, kMaxNetworkRecvBufSize);
 		if (-1 == read_size) {
 
 			//todo print errno 
@@ -250,28 +258,17 @@ void Network::RecvPacket(const int& epoll, epoll_event* event) {
 			break;
 		}
 		
-		//Packet* p = nullptr;
-		Packet p;
-		p.fd_ = socket;
-		session->RecvData(buf, read_size, &p);
+		Packet* recvPacket = nullptr;
+		session->RecvData(buf, read_size, &recvPacket);
 
-		if (nullptr != p.body_){
-			packet_queue_.Push(p);
+		if (nullptr != recvPacket){
+
+			FdPacketPair fdPacketPair = std::make_pair(socket, recvPacket);
+			packet_queue_.Push(fdPacketPair);
+
 		}
 
 	} while (true);
-
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Network::SendPacket(const Fd fd, const char* buf, const uint16_t size) {
-
-	auto send_size = write(fd, buf, size);
-
-	if (-1 == send_size)
-	{
-		//todo log
-	}
 
 }
 
@@ -315,9 +312,13 @@ void* Network::ProcessPacket(void* args) {
 			continue;
 		}
 
-		auto packet = p.value();
+		auto fdPacketPair = p.value();
 
-		auto it = net->packet_handler_map_.find(packet.header_.packet_id_);
+		//auto fd = fdPacketPair.first;
+		auto packet = fdPacketPair.second;
+
+		auto it = net->packet_handler_map_.find(packet->header_.packet_id_);
+
 		if (net->packet_handler_map_.end() != it) {
 
 			it->second(SendHelper, packet);

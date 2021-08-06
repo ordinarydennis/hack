@@ -135,5 +135,11 @@
     <ClInclude Include="chat_server\handlers.h">
       <Filter>chat_server</Filter>
     </ClInclude>
+    <ClInclude Include="chat_server\packet_define_req.h">
+      <Filter>chat_server</Filter>
+    </ClInclude>
+    <ClInclude Include="chat_server\packet_define_ack.h">
+      <Filter>chat_server</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
