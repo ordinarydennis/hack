@@ -51,7 +51,9 @@ public:
 public:
 	//basic methods(init, run, destroy..)
 	//other methods
-	void RecvData(char* buf, ssize_t data_size, Packet** packet);
+	void RecvPacket(char* buf, ssize_t data_size, Packet** packet);
+
+	void SendPacket(const PacketId packet_id, const char* body, const uint16_t body_size) const;
 
 	//getters
 	const Fd FD() const { return fd_; };

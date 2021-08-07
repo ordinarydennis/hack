@@ -43,7 +43,7 @@ public:
 
 	void Destory();
 
-	void AddHandler(PacketId packet_id, Network::PacketHandler h);
+	void AddHandler(PacketId packet_id, Network::PacketHandler packet_handler);
 
 
 public:
@@ -52,7 +52,6 @@ public:
 	//setters
 
 	//data members
-
 
 
 private:

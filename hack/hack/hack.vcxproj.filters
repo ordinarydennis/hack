@@ -141,5 +141,8 @@
     <ClInclude Include="chat_server\packet_define_ack.h">
       <Filter>chat_server</Filter>
     </ClInclude>
+    <ClInclude Include="network\packet\packet_ids.h">
+      <Filter>network\packet</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

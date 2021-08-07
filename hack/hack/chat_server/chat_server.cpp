@@ -20,6 +20,8 @@ void ChatServer::Init(hack::Port port)
 
 	ServerApp::Init(port);
 
+	AddHandler(hack::kPacketIdOnConnectSession, OnConnectSession);
+	AddHandler(hack::kPacketIdOnCloseSession, OnCloseSession);
 	AddHandler(21, HandlerReqLogin);
 
 }

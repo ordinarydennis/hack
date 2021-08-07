@@ -16,7 +16,7 @@ Session::~Session() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Session::RecvData(char* buf, ssize_t data_size, Packet** packet) {
+void Session::RecvPacket(char* buf, ssize_t data_size, Packet** packet) {
 
 	//받은 데이터 수신 버퍼에 복사
 	char* cur_recv_buf_pos = recv_buf_ + cur_buf_idx_;
@@ -64,4 +64,32 @@ void Session::RecvData(char* buf, ssize_t data_size, Packet** packet) {
 		cur_buf_idx_ = 0;
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Session::SendPacket(const PacketId packet_id, const char* body, const uint16_t body_size) const {
+
+	//header
+	hack::Packet ackPacket;
+
+	ackPacket.header_.size_ = static_cast<uint16_t>(sizeof(ackPacket) + body_size);
+	ackPacket.header_.packet_id_ = packet_id;
+
+	char sendBuf[256] = { 0, };
+
+	//copy header
+	memcpy(sendBuf, reinterpret_cast<char*>(&ackPacket), sizeof(ackPacket));
+
+	//copy body
+	memcpy(sendBuf + sizeof(ackPacket), body, body_size);
+
+	auto send_size = write(fd_, sendBuf, ackPacket.header_.size_);
+
+	if (-1 == send_size) {
+
+		Log("Session::SendPacket fd {}", fd_);
+
+	}
+
+}
+
 }; //namespace hack

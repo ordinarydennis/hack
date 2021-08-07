@@ -15,41 +15,10 @@
 //#include <>
 
 //your project's headers.
-#include "session/session.h"
 #include "network_config.h"
 
 namespace hack {
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//todo 적절한 위치로 이동
-void SendHelper(const Fd fd, const PacketId packet_id, const char* body, const uint16_t body_size) {
-
-	Log("SendHelper fd {}", fd);
-
-	//header
-	hack::Packet ackPacket;
-
-	ackPacket.header_.size_ = static_cast<uint16_t>(sizeof(ackPacket) + body_size);
-	ackPacket.header_.packet_id_ = packet_id;
-
-	char sendBuf[256] = { 0, };
-
-	//copy header
-	memcpy(sendBuf, reinterpret_cast<char*>(&ackPacket), sizeof(ackPacket));
-
-	//copy body
-	memcpy(sendBuf + sizeof(ackPacket), body, body_size);
-
-
-	auto send_size = write(fd, sendBuf, ackPacket.header_.size_);
-
-	if (-1 == send_size) {
-
-		Log("SendHelper send failure fd {}", fd);
-
-	}
-
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Network::Network(uint32_t count_of_processor) 
@@ -119,10 +88,9 @@ void Network::Run() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Network::AddPacketHandler(PacketId packet_id, PacketHandler h)
-{
+void Network::AddPacketHandler(PacketId packet_id, PacketHandler packet_handler) {
 	//네트워크에 등록
-	packet_handler_map_.emplace(packet_id, h);
+	packet_handler_map_.emplace(packet_id, packet_handler);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,13 +121,11 @@ void Network::Accept() {
 				break;
 			}
 			else {
-				//ShowLog("[E] accept failed");
 				break;
 			}
 		}
 			
 		if (!MakeSocketNonBlocking(client_socket)) {
-			//ShowLog("[E]  MakeSocketNonBlocking failed");
 			break;
 		}
 
@@ -168,9 +134,11 @@ void Network::Accept() {
 		event_->data.ptr = session;
 		event_->events = EPOLLIN | EPOLLET;
 		if (epoll_ctl(epoll_, EPOLL_CTL_ADD, client_socket, event_) == -1) {
-			//std::cerr << "[E] epoll_ctl failed\n";
 			break;
 		}
+		
+		OnConnectSession(session);
+
 	} while (true);
 }
 
@@ -263,9 +231,14 @@ void Network::RecvPacket(const int& epoll, epoll_event* event) {
 
 		} else if (0 == read_size) { // EOF - remote closed connection
 
+			//todo 여기 
+			OnCloseSession(session);
+
 			epoll_ctl(epoll, EPOLL_CTL_DEL, socket, NULL);
 			close(socket);
 
+			//todo 여기서 삭제 하면 OnCloseSession 핸들러에서 접근을 못한다.
+			//스마트 포인터 처리?
 			if (nullptr != session) {
 				delete session;
 			}
@@ -274,12 +247,12 @@ void Network::RecvPacket(const int& epoll, epoll_event* event) {
 		}
 		
 		Packet* recvPacket = nullptr;
-		session->RecvData(buf, read_size, &recvPacket);
+		session->RecvPacket(buf, read_size, &recvPacket);
 
 		if (nullptr != recvPacket){
 
-			FdPacketPair fdPacketPair = std::make_pair(socket, recvPacket);
-			packet_queue_.Push(fdPacketPair);
+			SessionPacketPair sessionPacketPair = std::make_pair(session, recvPacket);
+			packet_queue_.Push(sessionPacketPair);
 
 		}
 
@@ -314,6 +287,45 @@ void Network::EpollWait() {
 
 	} while (true);
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::OnConnectSession(Session* session) {
+
+	Packet onConnectPacket;
+	onConnectPacket.header_.packet_id_ = kPacketIdOnConnectSession;
+	onConnectPacket.header_.size_ = sizeof(onConnectPacket);
+
+	Packet* recvPacket = nullptr;
+
+	session->RecvPacket(reinterpret_cast<char*>(&onConnectPacket), sizeof(Packet), &recvPacket);
+
+	if (nullptr != recvPacket) {
+
+		SessionPacketPair sessionPacketPair = std::make_pair(session, recvPacket);
+		packet_queue_.Push(sessionPacketPair);
+
+	}
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::OnCloseSession(Session* session) {
+
+	Packet onClosePacket;
+	onClosePacket.header_.packet_id_ = kPacketIdOnCloseSession;
+	onClosePacket.header_.size_ = sizeof(onClosePacket);
+
+	Packet* recvPacket = nullptr;
+
+	session->RecvPacket(reinterpret_cast<char*>(&onClosePacket), sizeof(Packet), &recvPacket);
+
+	if (nullptr != recvPacket) {
+
+		SessionPacketPair sessionPacketPair = std::make_pair(session, recvPacket);
+		packet_queue_.Push(sessionPacketPair);
+
+	}
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void* Network::ProcessPacket(void* args) {
@@ -327,16 +339,24 @@ void* Network::ProcessPacket(void* args) {
 			continue;
 		}
 
-		auto fdPacketPair = p.value();
+		auto sessionPacketPair = p.value();
 
-		auto fd = fdPacketPair.first;
-		auto packet = fdPacketPair.second;
+		auto session = sessionPacketPair.first;
+		if (nullptr == session) {
+			//Log
+		}
+
+		auto packet = sessionPacketPair.second;
+		if (nullptr == packet) {
+			//Log
+		}
+
 
 		auto it = net->packet_handler_map_.find(packet->header_.packet_id_);
 
 		if (net->packet_handler_map_.end() != it) {
 
-			it->second(fd, packet, SendHelper);
+			it->second(session, packet);
 
 		}
 

@@ -3,14 +3,23 @@
 #include "packet_define_req.h"
 #include "packet_define_ack.h"
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void HandlerReqLogin(const hack::Fd fd, const hack::Packet* packet, hack::SendHelperFp sendhelper) {
+void OnConnectSession(const hack::Session* session, const hack::Packet* packet) {
 
-	hack::Log("HandlerReqLogin packet_id_: {}, size_: {}", packet->header_.packet_id_, packet->header_.size_);
+	hack::Log("OnConnectSession fd {}" , session->FD());
 
-	auto size = sizeof(hack::Header);
+}
 
-	hack::Log("HandlerReqLogin size: {}", size);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void OnCloseSession(const hack::Session* session, const hack::Packet* packet) {
+
+	hack::Log("OnCloseSession fd {}", session->FD());
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HandlerReqLogin(const hack::Session* session, const hack::Packet* packet) {
 
 	const char* bodyBuf = reinterpret_cast<const char*>(packet) + sizeof(hack::Header);
 
@@ -18,12 +27,16 @@ void HandlerReqLogin(const hack::Fd fd, const hack::Packet* packet, hack::SendHe
 
 	hack::Log("HandlerReqLogin id: {}, pw: {}", pdReqLogin->id_, pdReqLogin->pw_);
 
-
 	//body
 	PdAckLogin pdAckLogin;
 	pdAckLogin.result_ = 1;
 
-	//todo session을 인자로 넘기는게 낫나?
-	sendhelper(fd, 22, reinterpret_cast<const char*>(&pdAckLogin), sizeof(pdAckLogin));
+	//body 직렬화 템플릿 함수 있으면 좋겠다.
+
+	if (session) {
+
+		session->SendPacket(22, reinterpret_cast<const char*>(&pdAckLogin), sizeof(pdAckLogin));
+	
+	}
 
 }

@@ -132,6 +132,7 @@
     <ClInclude Include="network\network.h" />
     <ClInclude Include="network\network_config.h" />
     <ClInclude Include="network\packet\packet.h" />
+    <ClInclude Include="network\packet\packet_ids.h" />
     <ClInclude Include="network\session\session.h" />
     <ClInclude Include="network\session\session_config.h" />
     <ClInclude Include="utils\logger\logger.h" />

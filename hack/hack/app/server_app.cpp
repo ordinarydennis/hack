@@ -57,10 +57,10 @@ void ServerApp::Destory() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void ServerApp::AddHandler(PacketId packet_id, Network::PacketHandler packetHandler) {
+void ServerApp::AddHandler(PacketId packet_id, Network::PacketHandler packet_handler) {
 
 	Log("ServerApp::AddHandler packet_id : {}", packet_id);
-	network_->AddPacketHandler(packet_id, packetHandler);
+	network_->AddPacketHandler(packet_id, packet_handler);
 
 }
 

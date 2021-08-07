@@ -28,19 +28,19 @@
 #include "../utils/tsqueue/tsqueue.h"
 #include "packet/packet.h"
 
+class Session;
 struct epoll_event;
+
 //
 namespace hack {
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void SendHelper(const Fd fd, const PacketId packet_id, const char* body, const uint16_t body_size);
 
 class Network {
+
 //types(including typedef, using, and nested structsand classes)
 public:
-	//todo SendHelperFp 이거 이름 더 좋은걸로 바꾸자
-	using PacketHandler = std::function<void(const Fd, const Packet*, SendHelperFp)>;
-	using FdPacketPair = std::pair<Fd, Packet*>;
+	using PacketHandler = std::function<void(const Session*, const Packet*)>;
+	using SessionPacketPair = std::pair<Session*, Packet*>;
+
 
 //constants
 public:
@@ -61,7 +61,7 @@ public:
 	void Run();
 
 	//other methods
-	void AddPacketHandler(PacketId packet_id, PacketHandler h);
+	void AddPacketHandler(PacketId packet_id, PacketHandler packet_handler);
 
 	//getters
 	
@@ -104,6 +104,10 @@ private:
 
 	void EpollWait();
 
+	void OnConnectSession(Session* session);
+
+	void OnCloseSession(Session* session);
+
 
 //private data members	
 private:
@@ -119,7 +123,7 @@ private:
 
 	pthread_t* thread_id_list_ = nullptr;
 
-	TSQueue<FdPacketPair> packet_queue_;
+	TSQueue<SessionPacketPair> packet_queue_;
 
 	std::unordered_map<PacketId, PacketHandler>	packet_handler_map_;
 
