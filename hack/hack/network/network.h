@@ -92,6 +92,8 @@ private:
 
 	void Accept();
 
+	void Close(const int epoll, epoll_event* event);
+
 	bool MakeSocketNonBlocking(const int socket);
 
 	bool RegisterEpollEvnet(const int socket, const uint32_t event);
@@ -100,7 +102,7 @@ private:
 
 	void DistroyThread(const uint32_t count_of_processor);
 
-	void RecvPacket(const int& epoll, epoll_event* event);
+	void RecvPacket(epoll_event* event);
 
 	void EpollWait();
 

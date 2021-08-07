@@ -143,6 +143,25 @@ void Network::Accept() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Network::Close(const int epoll, epoll_event* event)
+{
+	auto session = static_cast<Session*>(event->data.ptr);
+	auto socket = session->FD();
+
+	OnCloseSession(session);
+
+	epoll_ctl(epoll, EPOLL_CTL_DEL, socket, NULL);
+	close(socket);
+
+	//todo 여기서 삭제 하면 OnCloseSession 핸들러에서 접근을 못한다.
+	//스마트 포인터 처리?
+	if (nullptr != session) {
+		delete session;
+		session = nullptr;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool Network::MakeSocketNonBlocking(int socket) {
 	
 	int flags = fcntl(socket, F_GETFL, 0);
@@ -206,7 +225,7 @@ void Network::DistroyThread(const uint32_t count_of_processor) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Network::RecvPacket(const int& epoll, epoll_event* event) {
+void Network::RecvPacket(epoll_event* event) {
 
 	//todo 여기도 다시 분석
 	auto session = static_cast<Session*>(event->data.ptr);
@@ -231,17 +250,7 @@ void Network::RecvPacket(const int& epoll, epoll_event* event) {
 
 		} else if (0 == read_size) { // EOF - remote closed connection
 
-			//todo 여기 
-			OnCloseSession(session);
-
-			epoll_ctl(epoll, EPOLL_CTL_DEL, socket, NULL);
-			close(socket);
-
-			//todo 여기서 삭제 하면 OnCloseSession 핸들러에서 접근을 못한다.
-			//스마트 포인터 처리?
-			if (nullptr != session) {
-				delete session;
-			}
+			//Close(event);
 
 			break;
 		}
@@ -275,13 +284,18 @@ void Network::EpollWait() {
 				epoll_event.events & EPOLLHUP ||
 				!(epoll_event.events & EPOLLIN)) { // error
 
-				close(epoll_event_list_[i].data.fd);
+				Close(epoll_, &epoll_event);
+
 			}
 			else if (listen_socket_ == epoll_event_list_[i].data.fd) { // new connection
+
 				Accept();
+
 			}
 			else { // data to read
-				RecvPacket(epoll_, &epoll_event);
+
+				RecvPacket(&epoll_event);
+
 			}
 		}
 
